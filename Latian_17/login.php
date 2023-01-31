@@ -1,0 +1,103 @@
+<?php
+session_start();
+require "functions.php";
+
+if(isset($_COOKIE['id'])  &&  isset($_COOKIE['ussername'])){
+  $id = $_COOKIE['id'];
+  $user = $_COOKIE['ussername'];
+
+  // ambil ussername dengan memanggil id dari database
+  $resultCookies = mysqli_query($db, "SELECT Email FROM users_tamu WHERE id = '$id'");
+
+  $rowCookies = mysqli_fetch_assoc($resultCookies);
+
+  // cek apakah ussername yg diacak sama dengan ussername yang di database(diacak juga dan disamakan)
+  if($user === hash('ripemd128',$rowCookies['Email'])){
+    $_SESSION['login'] = true;
+  };
+
+
+
+
+}
+
+if(isset($_SESSION['login'])){
+    header("location: index.php");
+    exit;
+}
+
+  if (isset($_POST["submit"])){
+
+    $ussername_login = $_POST["ussername-login"];
+    $password_login = $_POST["password-login"];
+
+    // cek apakah ussername sama
+
+    $DataUsername = mysqli_query($db,"SELECT * FROM users_tamu WHERE Email = '$ussername_login'");
+
+    // Cek ussername
+    $row2 = mysqli_fetch_assoc($DataUsername);
+
+    if(mysqli_num_rows($DataUsername)){
+      if(password_verify($password_login,$row2["Password"])){
+        header("Location: index.php");
+        echo "<script> 
+                alert('yaay, Berhasil masuk')
+             </script>";
+        // session login
+        $_SESSION["login"] = true;
+
+        if(isset($_POST['remember'])){
+          setcookie('id',$row2['id'],time()+60);//dari mysqli querry row2
+          setcookie('ussername', hash('ripemd128',$row2['Email']),time()+60);
+          //has untuk mengacak, ripemd128 adalah algoritma dan parameter kedua adalah data yang diacak
+        };
+
+        header('location: index.php');
+        exit;
+      } 
+    } 
+    $salah = true;
+
+  }
+
+
+
+
+?>
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>login</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-gH2yIJqKdNHPEq0n4Mqa/HGKIhSkIHeL5AyhkYV8i59U5AR6csBvApHHNl/vI1Bx" crossorigin="anonymous">
+  </head>
+  <body>
+    <div class="container">
+        <div class="container-fluid">
+            <form class="w-50 mt-5 mx-auto" action="" method="POST">
+            <h3>Login</h3>
+            <?php if(isset($salah)): ?>
+              <p class="text-danger">Password atau ussername anda salah</p>
+            <?php endif;?>
+            <div class="mb-3">
+                <label for="ussername" class="form-label">Email address</label>
+                <input type="email" name="ussername-login" class="form-control" id="ussername" aria-describedby="emailHelp">
+            </div>
+            <div class="mb-3">
+                <label for="password" class="form-label">Password</label>
+                <input type="password" class="form-control" name="password-login" id="password">
+            </div>
+            <div class="mb-3 form-check">
+              <input type="checkbox" class="form-check-input" id="remember" name="remember">
+              <label class="form-check-label" for="remember">Check me out</label>
+            </div>
+            <button type="submit" class="btn btn-primary w-100" name="submit">Submit</button>
+            </form>
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-A3rJD856KowSb7dwlZdYEkO39Gagi7vIsF0jrRAoQmDKKtQBHUuLZ9AsSv4jD4Xa" crossorigin="anonymous"></script>
+  </body>
+</html>

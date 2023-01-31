@@ -1,0 +1,16 @@
+body {
+  background: rgb(212, 212, 212);
+}
+
+.bg-glass {
+  /* From https://css.glass */
+  background: rgba(5, 10, 5, 0.221);
+  border-radius: 16px;
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(6.2px);
+  -webkit-backdrop-filter: blur(6.2px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+}
+.isi {
+  background: rgba(39, 38, 38, 0.909);
+}

@@ -1,0 +1,26 @@
+body {
+  background-color: rgb(240, 238, 238);
+}
+
+.isi {
+  font-weight: 600;
+  color: rgb(123, 122, 122);
+}
+
+.btn-custom {
+  --bs-btn-padding-y: 0.25rem;
+  --bs-btn-padding-x: 0.5rem;
+  --bs-btn-font-size: 0.75rem;
+}
+
+.isi img {
+  height: 80px;
+  display: block;
+}
+
+.containe .creat {
+  text-decoration: none;
+  color: white;
+  font-weight: bold;
+}
+
